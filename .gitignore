@@ -1,0 +1,72 @@
+# =========================
+# Java / Maven
+# =========================
+target/
+*.class
+*.log
+*.jar
+*.jar.original
+*.war
+.mvn/wrapper/maven-wrapper.jar
+
+# Ignorar builds dentro de src
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# =========================
+# IDEs
+# =========================
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# VS Code
+.vscode/
+
+# =========================
+# Node / React
+# =========================
+node_modules/
+build/
+.env
+
+# =========================
+# Docker
+docker-compose.override.yml
+
+# =========================
+# OS
+.DS_Store
+Thumbs.db
+
+# =========================
+# TEMP / CACHE
+*.tmp
+*.cache
+/.metadata/
+
+# =========================
+# SECRETOS / CONFIG SENSIBLE
+.env
+**/.env

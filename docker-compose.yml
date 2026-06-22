@@ -1,0 +1,117 @@
+services:
+  mysql-db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    ports:
+      - "3307:3306" 
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - easytick-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+    networks:
+      - easytick-net
+
+  eureka-service:
+    build: ./eureka-service/eureka-service
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - easytick-net
+
+  api-gateway:
+    build: ./api-gateway/api-gateway
+    container_name: api-gateway
+    depends_on:
+      - eureka-service
+    environment:
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    ports:
+      - "8080:8080"
+    networks:
+      - easytick-net
+
+  auth-service:
+    build: ./auth-service/auth-service
+    container_name: auth-service
+    depends_on:
+      - mysql-db
+      - eureka-service
+    env_file:
+      - ./auth-service/auth-service/.env
+    networks:
+      - easytick-net
+
+  event-service:
+    build: ./event-service/event-service
+    container_name: event-service
+    depends_on:
+      - mysql-db
+      - eureka-service
+      - rabbitmq
+    env_file:
+      - ./event-service/event-service/.env
+    networks:
+      - easytick-net
+
+  booking-service:
+    build: ./booking-service/booking-service
+    container_name: booking-service
+    depends_on:
+      - mysql-db
+      - eureka-service
+      - rabbitmq
+    env_file:
+      - ./booking-service/booking-service/.env
+    networks:
+      - easytick-net
+
+  payment-service:
+    build: ./payment-service/payment-service
+    container_name: payment-service
+    depends_on:
+      - mysql-db
+      - eureka-service
+      - rabbitmq
+    env_file:
+      - ./payment-service/payment-service/.env
+    environment:
+      - PAYPAL_API_URL=https://api-m.sandbox.paypal.com
+    networks:
+      - easytick-net
+
+  notification-service:
+    build: ./notification-service/notification-service
+    container_name: notification-service
+    depends_on:
+      - mysql-db
+      - eureka-service
+      - rabbitmq
+    env_file:
+      - ./notification-service/notification-service/.env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/notification_service_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=mysql
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+    networks:
+      - easytick-net
+
+volumes:
+  mysql_data:
+
+networks:
+  easytick-net:
+    driver: bridge

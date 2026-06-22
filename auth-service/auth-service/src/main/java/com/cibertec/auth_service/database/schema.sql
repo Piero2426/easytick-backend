@@ -1,0 +1,20 @@
+create database auth_db
+
+
+CREATE TABLE users (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(150) UNIQUE,
+  password VARCHAR(255),
+  role VARCHAR(50),
+  enabled BOOLEAN,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE user_activity (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  action VARCHAR(100),
+  action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
